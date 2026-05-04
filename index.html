@@ -4,30 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konect Gestão - Cloud</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- BIBLIOTECA CORRIGIDA -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #1a1a1a; --light: #f8f9fa; }
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background: var(--dark); color: #ffd700; padding: 1.2rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        header { background: var(--dark); color: #ffd700; padding: 1.2rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-weight: bold; }
         .logo-container { text-align: center; margin: 20px 0; }
         .logo-text { font-size: 2.5rem; font-weight: 900; color: var(--dark); letter-spacing: -1px; text-transform: uppercase; }
         .logo-sub { color: var(--primary); font-weight: bold; display: block; margin-top: -10px; }
-        .container { flex: 1; padding: 15px; max-width: 600px; margin: auto; width: 100%; box-sizing: border-box; }
+        .container { flex: 1; padding: 15px; max-width: 500px; margin: auto; width: 100%; box-sizing: border-box; }
         .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        button { padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: #ffc107; color: black; }
         .btn-dark { background: var(--dark); color: white; }
+        .btn-google { background: white; color: #444; border: 1px solid #ddd; margin-top: 15px; }
         .btn-exit { background: #333; color: #fff; grid-column: span 2; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
         .client-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .status-expired { color: var(--danger); font-weight: bold; }
         .hidden { display: none; }
-        .footer-banner { background: linear-gradient(90deg, #ff0000, #990000); color: white; padding: 15px; text-align: center; text-decoration: none; position: sticky; bottom: 0; width: 100%; font-weight: bold; display: block; box-sizing: border-box; font-size: 0.8rem; }
+        .footer-banner { background: linear-gradient(90deg, #ff0000, #990000); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -45,29 +46,32 @@
         <input type="password" id="auth-password" placeholder="Sua Senha">
         <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
         <button class="btn-dark" style="margin-top:10px" onclick="handleSignUp()">CRIAR CONTA</button>
+        
+        <div style="text-align:center; margin: 15px 0; color: #888;">OU</div>
+        
+        <button class="btn-google" onclick="handleGoogleLogin()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> ENTRAR COM GOOGLE
+        </button>
     </div>
 
     <!-- MENU PRINCIPAL -->
     <div id="main-menu" class="hidden">
-        <div class="logo-container">
-            <div class="logo-text">KONECT</div>
-            <div class="logo-sub">GESTOR</div>
-        </div>
+        <div class="logo-container"><div class="logo-text">KONECT</div><div class="logo-sub">GESTOR</div></div>
         <div class="menu-grid">
             <button class="btn-primary" onclick="showSection('sec-cadastro')"><i class="fas fa-user-plus"></i> NOVO CLIENTE</button>
             <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-search"></i> CONSULTA</button>
-            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-key"></i> CONFIG PIX</button>
+            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-key"></i> CHAVE PIX</button>
             <button class="btn-danger" onclick="checkExpired()"><i class="fas fa-clock"></i> VENCIDOS</button>
-            <button class="btn-exit" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> SAIR DO SISTEMA</button>
+            <button class="btn-exit" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> SAIR E SALVAR</button>
         </div>
     </div>
 
-    <!-- CADASTRO / EDIÇÃO -->
+    <!-- SEÇÕES ADICIONAIS -->
     <div id="sec-cadastro" class="card hidden">
-        <h3 id="form-title">Dados do Cliente</h3>
+        <h3 id="form-title">Cadastrar Cliente</h3>
         <input type="hidden" id="c-id">
         <input type="text" id="c-nome" placeholder="Nome">
-        <input type="text" id="c-tel" placeholder="Telefone (DDI+DDD+Num)">
+        <input type="text" id="c-tel" placeholder="WhatsApp (DDI+DDD+Num)">
         <input type="date" id="c-venc">
         <input type="number" id="c-valor" placeholder="Valor R$">
         <input type="text" id="c-servidor" placeholder="Servidor">
@@ -75,16 +79,12 @@
         <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
-    <!-- LISTAGEM -->
     <div id="sec-consulta" class="card hidden">
-        <input type="text" id="searchBar" placeholder="Pesquisar..." onkeyup="filterClients()">
         <div id="clientList"></div>
         <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
-    <!-- PIX -->
     <div id="sec-pix" class="card hidden">
-        <h3>Chave PIX para Cobrança</h3>
         <input type="text" id="pixKeyField" placeholder="Sua chave PIX">
         <button class="btn-success" onclick="savePix()">SALVAR PIX</button>
         <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
@@ -94,10 +94,9 @@
 <div class="footer-banner">KONECT GESTÃO - SISTEMA DE ALTA PERFORMANCE</div>
 
 <script>
-    // CONFIGURAÇÃO SUPABASE
     const _URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
     const _KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
-    const supabase = libsupabase.createClient(_URL, _KEY);
+    const supabase = window.supabase.createClient(_URL, _KEY);
 
     let currentUser = null;
     let clients = [];
@@ -108,32 +107,34 @@
         const password = document.getElementById('auth-password').value;
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) alert("Erro: " + error.message);
-        else alert("Conta criada! Verifique seu e-mail ou tente logar.");
+        else alert("Conta criada! Verifique seu e-mail.");
     }
 
     async function handleLogin() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) alert("Acesso negado: " + error.message);
-        else {
-            currentUser = data.user;
-            loadData();
-            showSection('main-menu');
-        }
+        if (error) alert("Erro: " + error.message);
+        else { currentUser = data.user; initApp(); }
     }
 
-    async function handleLogout() {
-        await supabase.auth.signOut();
-        location.reload();
+    async function handleGoogleLogin() {
+        await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     }
 
-    // --- DADOS ---
+    async function handleLogout() { await supabase.auth.signOut(); location.reload(); }
+
+    // --- LÓGICA DO APP ---
+    async function initApp() {
+        await loadData();
+        showSection('main-menu');
+    }
+
     async function loadData() {
         const { data } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
         clients = data || [];
-        const pix = localStorage.getItem('pix_' + currentUser.id);
-        if(pix) document.getElementById('pixKeyField').value = pix;
+        const savedPix = localStorage.getItem('pix_' + currentUser.id);
+        if(savedPix) document.getElementById('pixKeyField').value = savedPix;
     }
 
     async function saveClient() {
@@ -147,31 +148,28 @@
             user_id: currentUser.id
         };
 
-        if(id) {
-            await supabase.from('clientes').update(payload).eq('id', id);
-        } else {
-            await supabase.from('clientes').insert([payload]);
-        }
-        
-        alert("Sincronizado com sucesso!");
-        await loadData();
-        goHome();
+        let error;
+        if(id) ({ error } = await supabase.from('clientes').update(payload).eq('id', id));
+        else ({ error } = await supabase.from('clientes').insert([payload]));
+
+        if(error) alert("Erro ao salvar: " + error.message);
+        else { alert("Salvo na Nuvem!"); await loadData(); goHome(); }
     }
 
-    function renderClients(data) {
+    function renderClients(listData) {
         const list = document.getElementById('clientList');
-        list.innerHTML = '';
-        data.forEach(c => {
-            const item = document.createElement('div');
-            item.className = 'client-item';
-            item.innerHTML = `
-                <div><b>${c.nome}</b><br><small>${c.vencimento}</small></div>
+        list.innerHTML = listData.length ? '' : '<p style="text-align:center">Nenhum cliente.</p>';
+        listData.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'client-item';
+            div.innerHTML = `
+                <div><b>${c.nome}</b><br><small>${c.vencimento.split('-').reverse().join('/')}</small></div>
                 <div style="display:flex; gap:5px">
                     <button class="btn-success" style="width:40px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
                     <button class="btn-dark" style="width:40px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
                 </div>
             `;
-            list.appendChild(item);
+            list.appendChild(div);
         });
     }
 
@@ -180,15 +178,6 @@
         const msg = `Olá *${nome}*!\nSeu acesso vence dia *${venc.split('-').reverse().join('/')}*.\nValor: R$ ${valor}\nPIX: ${pix}`;
         window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
     }
-
-    // --- NAVEGAÇÃO ---
-    function showSection(id) {
-        document.querySelectorAll('.card, #main-menu, #sec-auth').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        if(id === 'sec-consulta') renderClients(clients);
-    }
-
-    function goHome() { showSection('main-menu'); }
 
     function editClient(id) {
         const c = clients.find(cl => cl.id === id);
@@ -203,9 +192,26 @@
 
     function savePix() {
         localStorage.setItem('pix_' + currentUser.id, document.getElementById('pixKeyField').value);
-        alert("PIX salvo!");
-        goHome();
+        alert("PIX salvo!"); goHome();
     }
+
+    function showSection(id) {
+        document.querySelectorAll('.card, #main-menu, #sec-auth').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        if(id === 'sec-consulta') renderClients(clients);
+    }
+
+    function goHome() { 
+        document.getElementById('c-id').value = '';
+        showSection('main-menu'); 
+    }
+
+    async function checkSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) { currentUser = session.user; initApp(); }
+    }
+
+    checkSession();
 </script>
 </body>
 </html>
