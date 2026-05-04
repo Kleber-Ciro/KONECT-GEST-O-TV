@@ -28,6 +28,8 @@
         .footer-banner { position: fixed; bottom: 0; width: 100%; background: #900; color: white; overflow: hidden; white-space: nowrap; padding: 12px 0; font-size: 0.9rem; font-weight: bold; z-index: 1000; }
         .banner-scroll { display: inline-block; animation: scroll 25s linear infinite; padding-left: 100%; }
         @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .filter-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .filter-group input { margin: 0; }
     </style>
 </head>
 <body>
@@ -65,7 +67,7 @@
         <input type="text" id="nome" placeholder="Nome do Cliente">
         <input type="text" id="tel" placeholder="WhatsApp (DDD+Número)">
         <input type="date" id="venc">
-        <input type="number" id="valor" placeholder="Valor da Assinatura R$">
+        <input type="number" id="valor" placeholder="Valor R$">
         <input type="number" id="acessos" placeholder="Quantidade de Telas">
         <select id="pacote">
             <option value="">Selecione o Pacote</option>
@@ -73,45 +75,49 @@
             <option value="COMPLETO SEM 18+">COMPLETO SEM 18+</option>
         </select>
         <input type="text" id="app" placeholder="App Utilizado">
-        <input type="text" id="servidor" placeholder="Servidor de Origem">
+        <input type="text" id="servidor" placeholder="Servidor">
         <button class="btn-save" onclick="salvarCliente()"><i class="fas fa-cloud-upload-alt"></i> SALVAR NA NUVEM</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- CONSULTA -->
+    <!-- CONSULTA COM FILTROS AVANÇADOS -->
     <div id="view-list" class="card hidden">
-        <h3>Lista Geral</h3>
-        <input type="text" id="input-busca" placeholder="🔍 Pesquisar por nome..." onkeyup="renderLista('lista-geral', this.value)">
-        <div id="lista-geral" style="margin-top:15px"></div>
+        <h3>Lista de Clientes</h3>
+        <div class="filter-group">
+            <input type="text" id="filtro-nome" placeholder="Busca por nome..." onkeyup="aplicarFiltros()">
+            <input type="date" id="filtro-data" onchange="aplicarFiltros()">
+        </div>
+        <button class="btn-sec" style="padding: 5px; font-size: 0.8rem; margin-bottom: 10px;" onclick="limparFiltros()">Limpar Filtros</button>
+        <div id="lista-geral"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- VENCIMENTOS PRÓXIMOS -->
+    <!-- VENCIMENTOS PRÓXIMOS (3 DIAS) -->
     <div id="view-vencendo" class="card hidden">
-        <h3 style="color:var(--warning)">Alerta: Vencendo em breve</h3>
+        <h3 style="color:var(--warning)">Vencendo em até 03 dias</h3>
         <div id="lista-vencendo"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
     <!-- VENCIDOS -->
     <div id="view-expired" class="card hidden">
-        <h3 style="color:var(--danger)">Vencidos - Cobrança Urgente</h3>
+        <h3 style="color:var(--danger)">Vencidos</h3>
         <div id="lista-vencidos"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
     <!-- PIX -->
     <div id="view-pix" class="card hidden">
-        <h3>Configurar Pagamento</h3>
+        <h3>Configurar PIX</h3>
         <input type="text" id="chave-pix" placeholder="Sua Chave PIX">
-        <button class="btn-save" onclick="salvarPix()">SALVAR CONFIGURAÇÃO</button>
+        <button class="btn-save" onclick="salvarPix()">SALVAR</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
     <!-- XML -->
     <div id="view-xml" class="card hidden">
-        <h3>Backup e Sincronia XML</h3>
-        <button class="btn-main" onclick="exportarXML()">EXPORTAR PARA XML</button>
+        <h3>Backup XML</h3>
+        <button class="btn-main" onclick="exportarXML()">EXPORTAR XML</button>
         <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:20px;">
             <input type="file" id="file-xml" accept=".xml">
             <button class="btn-save" style="margin-top:10px" onclick="importarXML()">IMPORTAR XML</button>
@@ -122,7 +128,7 @@
 
 <div class="footer-banner">
     <div class="banner-scroll">
-        🚀 KONECT GESTÃO CLOUD: DADOS SEGUROS NO SUPABASE — 🔄 SINCRONIZAÇÃO EM TEMPO REAL — 📱 VERSÃO 2.6
+        🚀 KONECT GESTÃO CLOUD: DADOS SEGUROS NO SUPABASE — 🔄 SINCRONIZAÇÃO EM TEMPO REAL — 📱 VERSÃO 2.7
     </div>
 </div>
 
@@ -142,7 +148,7 @@
         const e = document.getElementById('email').value;
         const p = document.getElementById('pass').value;
         const { data, error } = await sb.auth.signInWithPassword({ email: e, password: p });
-        if(error) alert("Falha: " + error.message); else { user = data.user; carregarDados(); }
+        if(error) alert("Erro: " + error.message); else { user = data.user; carregarDados(); }
     }
 
     async function acaoCriar() {
@@ -160,6 +166,23 @@
         abrir('view-panel');
     }
 
+    function aplicarFiltros() {
+        const nome = document.getElementById('filtro-nome').value.toLowerCase();
+        const dataVenc = document.getElementById('filtro-data').value;
+        
+        let filtrados = dadosClientes;
+        if(nome) filtrados = filtrados.filter(c => c.nome.toLowerCase().includes(nome));
+        if(dataVenc) filtrados = filtrados.filter(c => c.vencimento === dataVenc);
+        
+        renderBase('lista-geral', filtrados);
+    }
+
+    function limparFiltros() {
+        document.getElementById('filtro-nome').value = "";
+        document.getElementById('filtro-data').value = "";
+        renderBase('lista-geral', dadosClientes);
+    }
+
     async function salvarCliente() {
         const id = document.getElementById('edit-id').value;
         const info = {
@@ -173,39 +196,14 @@
             servidor: document.getElementById('servidor').value,
             user_id: user.id
         };
-        
         if(id) await sb.from('clientes').update(info).eq('id', id);
         else await sb.from('clientes').insert([info]);
-        
         limparCampos(); carregarDados();
     }
 
-    async function excluirCliente(id) {
-        if(confirm("Excluir permanentemente?")) {
-            await sb.from('clientes').delete().eq('id', id); carregarDados();
-        }
-    }
-
-    function renderLista(targetId, filtro = "") {
+    function renderBase(targetId, lista) {
         const div = document.getElementById(targetId);
         div.innerHTML = "";
-        const hoje = new Date(); hoje.setHours(0,0,0,0);
-        
-        let lista = dadosClientes;
-        if(filtro) {
-            lista = dadosClientes.filter(c => c.nome.toLowerCase().includes(filtro.toLowerCase()));
-        }
-        
-        if(targetId === 'lista-vencidos') {
-            lista = dadosClientes.filter(c => new Date(c.vencimento + "T00:00:00") < hoje);
-        } else if(targetId === 'lista-vencendo') {
-            const limite = new Date(); limite.setDate(hoje.getDate() + 3);
-            lista = dadosClientes.filter(c => {
-                const dv = new Date(c.vencimento + "T00:00:00");
-                return dv >= hoje && dv <= limite;
-            });
-        }
-
         lista.forEach(c => {
             const item = document.createElement('div');
             item.className = 'client-card';
@@ -219,6 +217,22 @@
             `;
             div.appendChild(item);
         });
+    }
+
+    function renderLista(targetId) {
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        let lista = dadosClientes;
+        
+        if(targetId === 'lista-vencidos') {
+            lista = dadosClientes.filter(c => new Date(c.vencimento + "T00:00:00") < hoje);
+        } else if(targetId === 'lista-vencendo') {
+            const limite = new Date(); limite.setDate(hoje.getDate() + 3);
+            lista = dadosClientes.filter(c => {
+                const dv = new Date(c.vencimento + "T00:00:00");
+                return dv >= hoje && dv <= limite;
+            });
+        }
+        renderBase(targetId, lista);
     }
 
     function enviarCobranca(tel, nome, venc, valor) {
@@ -247,10 +261,33 @@
     function abrir(id) {
         document.querySelectorAll('.card, #view-panel').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        if(id === 'view-list') renderLista('lista-geral', document.getElementById('input-busca').value);
+        if(id === 'view-list') aplicarFiltros();
         if(id === 'view-expired') renderLista('lista-vencidos');
         if(id === 'view-vencendo') renderLista('lista-vencendo');
     }
+
+    function limparCampos() {
+        document.getElementById('edit-id').value = '';
+        document.querySelectorAll('#view-add input, #view-add select').forEach(i => i.value = '');
+    }
+
+    async function excluirCliente(id) {
+        if(confirm("Excluir permanentemente?")) {
+            await sb.from('clientes').delete().eq('id', id); carregarDados();
+        }
+    }
+
+    function salvarPix() { 
+        localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); 
+        alert("PIX Salvo!"); abrir('view-panel'); 
+    }
+
+    async function verificarSessao() { 
+        const { data } = await sb.auth.getSession(); 
+        if(data.session) { user = data.session.user; carregarDados(); } 
+    }
+
+    async function logout() { await sb.auth.signOut(); location.reload(); }
 
     function exportarXML() {
         let xml = '<?xml version="1.0" encoding="UTF-8"?><clientes>';
@@ -280,28 +317,13 @@
                     user_id: user.id
                 }]);
             }
-            alert("Importado com sucesso!"); carregarDados();
+            alert("Importado!"); carregarDados();
         };
         reader.readAsText(file);
     }
-
-    function limparCampos() {
-        document.getElementById('edit-id').value = '';
-        document.querySelectorAll('#view-add input, #view-add select').forEach(i => i.value = '');
-        document.getElementById('form-title').innerText = "Dados do Cliente";
-    }
-
-    function salvarPix() { 
-        localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); 
-        alert("PIX Salvo!"); abrir('view-panel'); 
-    }
-
-    async function verificarSessao() { 
-        const { data } = await sb.auth.getSession(); 
-        if(data.session) { user = data.session.user; carregarDados(); } 
-    }
-
-    async function logout() { await sb.auth.signOut(); location.reload(); }
 </script>
 </body>
 </html>
+      
+
+   
