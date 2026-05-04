@@ -3,375 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konect TV - Gestão Profissional</title>
+    <title>Konect Gestão - Cloud</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        :root {
-            --primary: #007bff;
-            --secondary: #6c757d;
-            --success: #28a745;
-            --danger: #dc3545;
-            --dark: #1a1a1a;
-            --light: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f2f5;
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; min-height: 100vh;
-        }
-
-        header {
-            background: var(--dark);
-            color: #ffd700;
-            padding: 1.2rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .logo-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--dark);
-            letter-spacing: -1px;
-            text-transform: uppercase;
-        }
-
-        .logo-sub {
-            color: var(--primary);
-            font-weight: bold;
-            display: block;
-            margin-top: -10px;
-        }
-
-        .container {
-            flex: 1; padding: 15px;
-            max-width: 900px; margin: auto; width: 100%;
-            box-sizing: border-box;
-        }
-
-        .card {
-            background: white; border-radius: 12px;
-            padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .menu-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 12px; border: none; border-radius: 8px;
-            cursor: pointer; font-weight: bold; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-
+        :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #1a1a1a; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--dark); color: #ffd700; padding: 1.2rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .logo-container { text-align: center; margin: 20px 0; }
+        .logo-text { font-size: 2.5rem; font-weight: 900; color: var(--dark); letter-spacing: -1px; text-transform: uppercase; }
+        .logo-sub { color: var(--primary); font-weight: bold; display: block; margin-top: -10px; }
+        .container { flex: 1; padding: 15px; max-width: 600px; margin: auto; width: 100%; box-sizing: border-box; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: #ffc107; color: black; }
         .btn-dark { background: var(--dark); color: white; }
-        .btn-edit { background: #17a2b8; color: white; padding: 8px; }
         .btn-exit { background: #333; color: #fff; grid-column: span 2; }
-
-        input, select {
-            width: 100%; padding: 12px; margin: 8px 0;
-            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
-            font-size: 1rem;
-        }
-
-        .client-item {
-            border-bottom: 1px solid #eee; padding: 15px 0;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .client-info b { color: var(--primary); font-size: 1.1rem; }
-        .client-meta { font-size: 0.85rem; color: #666; line-height: 1.4; }
-
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .client-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
         .status-expired { color: var(--danger); font-weight: bold; }
-
-        .footer-banner {
-            background: linear-gradient(90deg, #ff0000, #990000);
-            color: white; padding: 15px; text-align: center;
-            text-decoration: none; position: sticky; bottom: 0;
-            width: 100%; font-weight: bold; animation: pulse 2.5s infinite;
-            display: block; box-sizing: border-box; font-size: 0.9rem;
-        }
-
-        @keyframes pulse {
-            0% { background: #ff0000; }
-            50% { background: #cc0000; }
-            100% { background: #ff0000; }
-        }
-
         .hidden { display: none; }
+        .footer-banner { background: linear-gradient(90deg, #ff0000, #990000); color: white; padding: 15px; text-align: center; text-decoration: none; position: sticky; bottom: 0; width: 100%; font-weight: bold; display: block; box-sizing: border-box; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<header>
-    <i class="fas fa-tv"></i> SISTEMA DE GESTÃO DE ACESSOS
-</header>
+<header><i class="fas fa-cloud"></i> KONECT GESTÃO CLOUD</header>
 
 <div class="container">
-    
-    <div id="main-menu">
+    <!-- TELA DE LOGIN -->
+    <div id="sec-auth" class="card">
         <div class="logo-container">
             <div class="logo-text">KONECT</div>
-            <div class="logo-sub">GESTÃO</div>
+            <div class="logo-sub">ACESSO</div>
         </div>
+        <input type="email" id="auth-email" placeholder="Seu E-mail">
+        <input type="password" id="auth-password" placeholder="Sua Senha">
+        <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
+        <button class="btn-dark" style="margin-top:10px" onclick="handleSignUp()">CRIAR CONTA</button>
+    </div>
 
+    <!-- MENU PRINCIPAL -->
+    <div id="main-menu" class="hidden">
+        <div class="logo-container">
+            <div class="logo-text">KONECT</div>
+            <div class="logo-sub">GESTOR</div>
+        </div>
         <div class="menu-grid">
-            <button class="btn-primary" onclick="openCadastro()"><i class="fas fa-user-plus"></i> NOVO CLIENTE</button>
-            <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-search"></i> CONSULTA/EDITAR</button>
-            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-key"></i> CHAVE PIX</button>
+            <button class="btn-primary" onclick="showSection('sec-cadastro')"><i class="fas fa-user-plus"></i> NOVO CLIENTE</button>
+            <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-search"></i> CONSULTA</button>
+            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-key"></i> CONFIG PIX</button>
             <button class="btn-danger" onclick="checkExpired()"><i class="fas fa-clock"></i> VENCIDOS</button>
-            <button class="btn-dark" onclick="exportToXML()"><i class="fas fa-file-export"></i> EXPORTAR XML</button>
-            <button class="btn-dark" onclick="document.getElementById('importFile').click()"><i class="fas fa-file-import"></i> IMPORTAR XML</button>
-            <button class="btn-exit" onclick="exitApp()"><i class="fas fa-sign-out-alt"></i> SAIR E SALVAR</button>
+            <button class="btn-exit" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> SAIR DO SISTEMA</button>
         </div>
-        <input type="file" id="importFile" accept=".xml" class="hidden" onchange="importFromXML(this)">
     </div>
 
-    <!-- Seções Ocultas (Cadastro, PIX, Consulta, Vencidos) -->
-    <div id="sec-pix" class="card hidden">
-        <h3>Configurar Chave PIX</h3>
-        <input type="text" id="pixKey" placeholder="Sua chave PIX">
-        <button class="btn-success" style="width:100%" onclick="savePix()">Salvar Chave</button>
-        <button onclick="goHome()" style="width:100%; margin-top:10px">Voltar</button>
-    </div>
-
+    <!-- CADASTRO / EDIÇÃO -->
     <div id="sec-cadastro" class="card hidden">
-        <h3 id="form-title">Cadastrar Cliente</h3>
+        <h3 id="form-title">Dados do Cliente</h3>
         <input type="hidden" id="c-id">
-        <input type="text" id="c-nome" placeholder="Nome do Cliente">
-        <input type="text" id="c-tel" placeholder="Telefone (Ex: 5514997683840)">
+        <input type="text" id="c-nome" placeholder="Nome">
+        <input type="text" id="c-tel" placeholder="Telefone (DDI+DDD+Num)">
         <input type="date" id="c-venc">
         <input type="number" id="c-valor" placeholder="Valor R$">
-        <input type="number" id="c-acessos" placeholder="Nº de Acessos">
-        <input type="text" id="c-pacote" placeholder="Pacote / Lista">
-        <input type="text" id="c-app" placeholder="Aplicativo Utilizado">
-        <input type="text" id="c-servidor" placeholder="Servidor (Ex: Gold, P2P)">
-        
-        <button class="btn-success" style="width:100%" onclick="processClient()">SALVAR DADOS</button>
-        <button onclick="goHome()" style="width:100%; margin-top:10px">CANCELAR</button>
+        <input type="text" id="c-servidor" placeholder="Servidor">
+        <button class="btn-success" onclick="saveClient()">SALVAR NA NUVEM</button>
+        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
+    <!-- LISTAGEM -->
     <div id="sec-consulta" class="card hidden">
-        <h3>Consulta e Edição</h3>
-        <input type="text" id="searchBar" placeholder="Pesquisar por nome..." onkeyup="filterClients()">
+        <input type="text" id="searchBar" placeholder="Pesquisar..." onkeyup="filterClients()">
         <div id="clientList"></div>
-        <button onclick="goHome()" style="width:100%; margin-top:10px">Voltar</button>
+        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
-    <div id="sec-expired" class="card hidden">
-        <h3 style="color:var(--danger)">Clientes Vencidos</h3>
-        <div id="expiredList"></div>
-        <button onclick="goHome()" style="width:100%; margin-top:10px">Voltar</button>
+    <!-- PIX -->
+    <div id="sec-pix" class="card hidden">
+        <h3>Chave PIX para Cobrança</h3>
+        <input type="text" id="pixKeyField" placeholder="Sua chave PIX">
+        <button class="btn-success" onclick="savePix()">SALVAR PIX</button>
+        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 </div>
 
-<a href="https://mpago.la/2GLQsN3" target="_blank" class="footer-banner">
-    COLABORE PARA APOIAR O DESENVOLVIMENTO DE APPS FREE <br>
-    <small>CLIQUE AQUI PARA CONTRIBUIR VIA MERCADO PAGO</small>
-</a>
+<div class="footer-banner">KONECT GESTÃO - SISTEMA DE ALTA PERFORMANCE</div>
 
 <script>
-    let clients = JSON.parse(localStorage.getItem('konect_db')) || [];
-    let pixKey = localStorage.getItem('konect_pix') || '';
+    // CONFIGURAÇÃO SUPABASE
+    const _URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
+    const _KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
+    const supabase = libsupabase.createClient(_URL, _KEY);
 
-    function showSection(id) {
-        document.querySelectorAll('.card, #main-menu').forEach(c => c.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        if(id === 'sec-consulta') renderClients(clients);
+    let currentUser = null;
+    let clients = [];
+
+    // --- AUTENTICAÇÃO ---
+    async function handleSignUp() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) alert("Erro: " + error.message);
+        else alert("Conta criada! Verifique seu e-mail ou tente logar.");
     }
 
-    function goHome() {
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-        document.getElementById('main-menu').classList.remove('hidden');
-    }
-
-    function exitApp() {
-        // Garante que os dados estão no LocalStorage antes de simular a saída
-        localStorage.setItem('konect_db', JSON.stringify(clients));
-        localStorage.setItem('konect_pix', pixKey);
-        
-        if(confirm("Alterações salvas! Deseja fechar o sistema?")) {
-            window.close();
-            // Fallback caso o navegador bloqueie window.close()
-            document.body.innerHTML = "<div style='text-align:center; margin-top:50px;'><h1>Sistema Encerrado</h1><p>Dados salvos com sucesso. Pode fechar esta aba.</p></div>";
+    async function handleLogin() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) alert("Acesso negado: " + error.message);
+        else {
+            currentUser = data.user;
+            loadData();
+            showSection('main-menu');
         }
     }
 
-    function openCadastro() {
-        clearInputs();
-        document.getElementById('form-title').innerText = "Cadastrar Cliente";
-        showSection('sec-cadastro');
+    async function handleLogout() {
+        await supabase.auth.signOut();
+        location.reload();
     }
 
-    function savePix() {
-        pixKey = document.getElementById('pixKey').value;
-        localStorage.setItem('konect_pix', pixKey);
-        alert('PIX atualizado!');
-        goHome();
+    // --- DADOS ---
+    async function loadData() {
+        const { data } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
+        clients = data || [];
+        const pix = localStorage.getItem('pix_' + currentUser.id);
+        if(pix) document.getElementById('pixKeyField').value = pix;
     }
 
-    function processClient() {
+    async function saveClient() {
         const id = document.getElementById('c-id').value;
-        const clientData = {
-            id: id ? parseInt(id) : Date.now(),
+        const payload = {
             nome: document.getElementById('c-nome').value,
-            tel: document.getElementById('c-tel').value,
-            venc: document.getElementById('c-venc').value,
+            telefone: document.getElementById('c-tel').value,
+            vencimento: document.getElementById('c-venc').value,
             valor: document.getElementById('c-valor').value,
-            acessos: document.getElementById('c-acessos').value,
-            pacote: document.getElementById('c-pacote').value,
-            app: document.getElementById('c-app').value,
-            servidor: document.getElementById('c-servidor').value
+            servidor: document.getElementById('c-servidor').value,
+            user_id: currentUser.id
         };
 
-        if(!clientData.nome || !clientData.tel) return alert('Nome e Telefone são obrigatórios!');
-
         if(id) {
-            const index = clients.findIndex(c => c.id === parseInt(id));
-            clients[index] = clientData;
+            await supabase.from('clientes').update(payload).eq('id', id);
         } else {
-            clients.push(clientData);
+            await supabase.from('clientes').insert([payload]);
         }
-
-        localStorage.setItem('konect_db', JSON.stringify(clients));
-        alert('Dados salvos!');
+        
+        alert("Sincronizado com sucesso!");
+        await loadData();
         goHome();
     }
 
-    function editClient(id) {
-        const c = clients.find(cl => cl.id === id);
-        document.getElementById('c-id').value = c.id;
-        document.getElementById('c-nome').value = c.nome;
-        document.getElementById('c-tel').value = c.tel;
-        document.getElementById('c-venc').value = c.venc;
-        document.getElementById('c-valor').value = c.valor;
-        document.getElementById('c-acessos').value = c.acessos;
-        document.getElementById('c-pacote').value = c.pacote;
-        document.getElementById('c-app').value = c.app;
-        document.getElementById('c-servidor').value = c.servidor || '';
-        document.getElementById('form-title').innerText = "Editar Cliente";
-        showSection('sec-cadastro');
-    }
-
-    function renderClients(data, target = 'clientList') {
-        const list = document.getElementById(target);
+    function renderClients(data) {
+        const list = document.getElementById('clientList');
         list.innerHTML = '';
         data.forEach(c => {
-            const isExpired = new Date(c.venc) < new Date().setHours(0,0,0,0);
             const item = document.createElement('div');
             item.className = 'client-item';
             item.innerHTML = `
-                <div class="client-info">
-                    <b>${c.nome}</b><br>
-                    <div class="client-meta">
-                        📱 ${c.tel} | 🖥️ ${c.servidor || 'N/A'}<br>
-                        📅 Venc: <span class="${isExpired ? 'status-expired' : ''}">${c.venc.split('-').reverse().join('/')}</span>
-                    </div>
-                </div>
+                <div><b>${c.nome}</b><br><small>${c.vencimento}</small></div>
                 <div style="display:flex; gap:5px">
-                    <button class="btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
-                    <button class="btn-success" onclick="sendWhatsApp('${c.tel}', '${c.nome}', '${c.venc}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
-                    <button class="btn-danger" style="padding:8px" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>
+                    <button class="btn-success" style="width:40px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn-dark" style="width:40px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
                 </div>
             `;
             list.appendChild(item);
         });
     }
 
-    function exportToXML() {
-        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<konect_gestao>\n';
-        clients.forEach(c => {
-            xml += `  <cliente>\n    <id>${c.id}</id>\n    <nome>${c.nome}</nome>\n    <tel>${c.tel}</tel>\n    <venc>${c.venc}</venc>\n    <valor>${c.valor}</valor>\n    <acessos>${c.acessos}</acessos>\n    <pacote>${c.pacote}</pacote>\n    <app>${c.app}</app>\n    <servidor>${c.servidor}</servidor>\n  </cliente>\n`;
-        });
-        xml += '</konect_gestao>';
-        
-        const blob = new Blob([xml], { type: 'text/xml' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'backup_konect_gestao.xml';
-        link.click();
-    }
-
-    function importFromXML(input) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
-            const clientesXML = xmlDoc.getElementsByTagName("cliente");
-            
-            const imported = [];
-            for(let i = 0; i < clientesXML.length; i++) {
-                const getVal = (tag) => clientesXML[i].getElementsByTagName(tag)[0]?.textContent || '';
-                imported.push({
-                    id: parseInt(getVal('id')),
-                    nome: getVal('nome'),
-                    tel: getVal('tel'),
-                    venc: getVal('venc'),
-                    valor: getVal('valor'),
-                    acessos: getVal('acessos'),
-                    pacote: getVal('pacote'),
-                    app: getVal('app'),
-                    servidor: getVal('servidor')
-                });
-            }
-            if(confirm(`Importar ${imported.length} clientes? Isso substituirá seus dados atuais.`)) {
-                clients = imported;
-                localStorage.setItem('konect_db', JSON.stringify(clients));
-                alert('Importação concluída!');
-                location.reload();
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    function checkExpired() {
-        const today = new Date().setHours(0,0,0,0);
-        const expired = clients.filter(c => new Date(c.venc) < today);
-        showSection('sec-expired');
-        renderClients(expired, 'expiredList');
-    }
-
-    function deleteClient(id) {
-        if(confirm('Excluir cliente?')) {
-            clients = clients.filter(c => c.id !== id);
-            localStorage.setItem('konect_db', JSON.stringify(clients));
-            renderClients(clients);
-        }
-    }
-
-    function filterClients() {
-        const term = document.getElementById('searchBar').value.toLowerCase();
-        const filtered = clients.filter(c => c.nome.toLowerCase().includes(term));
-        renderClients(filtered);
-    }
-
     function sendWhatsApp(tel, nome, venc, valor) {
-        const dataFmt = venc.split('-').reverse().join('/');
-        const msg = `Olá *${nome}*,\n\nPassando para avisar que seu acesso *Konect TV* vence em *${dataFmt}*.\n\n*Valor:* R$ ${valor}\n*PIX:* ${pixKey}\n\nFavor enviar o comprovante após o pagamento!`;
-        const url = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank');
+        const pix = document.getElementById('pixKeyField').value;
+        const msg = `Olá *${nome}*!\nSeu acesso vence dia *${venc.split('-').reverse().join('/')}*.\nValor: R$ ${valor}\nPIX: ${pix}`;
+        window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    function clearInputs() {
-        document.querySelectorAll('#sec-cadastro input').forEach(i => i.value = '');
+    // --- NAVEGAÇÃO ---
+    function showSection(id) {
+        document.querySelectorAll('.card, #main-menu, #sec-auth').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        if(id === 'sec-consulta') renderClients(clients);
     }
 
-    document.getElementById('pixKey').value = pixKey;
+    function goHome() { showSection('main-menu'); }
+
+    function editClient(id) {
+        const c = clients.find(cl => cl.id === id);
+        document.getElementById('c-id').value = c.id;
+        document.getElementById('c-nome').value = c.nome;
+        document.getElementById('c-tel').value = c.telefone;
+        document.getElementById('c-venc').value = c.vencimento;
+        document.getElementById('c-valor').value = c.valor;
+        document.getElementById('c-servidor').value = c.servidor;
+        showSection('sec-cadastro');
+    }
+
+    function savePix() {
+        localStorage.setItem('pix_' + currentUser.id, document.getElementById('pixKeyField').value);
+        alert("PIX salvo!");
+        goHome();
+    }
 </script>
-
 </body>
 </html>
