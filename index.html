@@ -3,97 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konect Gestão - Cloud</title>
-    <!-- BIBLIOTECA CORRIGIDA -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
+    <title>Konect Gestão - Login Único</title>
+    <!-- BIBLIOTECA COM CARREGAMENTO GARANTIDO -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #1a1a1a; --light: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #1a1a1a; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
         header { background: var(--dark); color: #ffd700; padding: 1.2rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-weight: bold; }
-        .logo-container { text-align: center; margin: 20px 0; }
-        .logo-text { font-size: 2.5rem; font-weight: 900; color: var(--dark); letter-spacing: -1px; text-transform: uppercase; }
-        .logo-sub { color: var(--primary); font-weight: bold; display: block; margin-top: -10px; }
         .container { flex: 1; padding: 15px; max-width: 500px; margin: auto; width: 100%; box-sizing: border-box; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        button { padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .logo-container { text-align: center; margin-bottom: 25px; }
+        .logo-text { font-size: 2.2rem; font-weight: 900; color: var(--dark); text-transform: uppercase; margin: 0; }
+        .logo-sub { color: var(--primary); font-weight: bold; display: block; margin-top: -5px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; transition: 0.3s; }
         .btn-primary { background: var(--primary); color: white; }
+        .btn-dark { background: var(--dark); color: white; margin-top: 10px; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: #ffc107; color: black; }
-        .btn-dark { background: var(--dark); color: white; }
-        .btn-google { background: white; color: #444; border: 1px solid #ddd; margin-top: 15px; }
-        .btn-exit { background: #333; color: #fff; grid-column: span 2; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .client-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .hidden { display: none; }
-        .footer-banner { background: linear-gradient(90deg, #ff0000, #990000); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; }
+        .hidden { display: none !important; }
+        .footer-banner { background: #b30000; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<header><i class="fas fa-cloud"></i> KONECT GESTÃO CLOUD</header>
+<header><i class="fas fa-lock"></i> KONECT GESTÃO CLOUD</header>
 
 <div class="container">
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE ACESSO (EMAIL/SENHA) -->
     <div id="sec-auth" class="card">
         <div class="logo-container">
-            <div class="logo-text">KONECT</div>
-            <div class="logo-sub">ACESSO</div>
+            <h1 class="logo-text">KONECT</h1>
+            <span class="logo-sub">CONTROLE DE ACESSO</span>
         </div>
-        <input type="email" id="auth-email" placeholder="Seu E-mail">
-        <input type="password" id="auth-password" placeholder="Sua Senha">
-        <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
-        <button class="btn-dark" style="margin-top:10px" onclick="handleSignUp()">CRIAR CONTA</button>
-        
-        <div style="text-align:center; margin: 15px 0; color: #888;">OU</div>
-        
-        <button class="btn-google" onclick="handleGoogleLogin()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> ENTRAR COM GOOGLE
-        </button>
+        <p style="text-align:center; color:#666; font-size: 0.9rem;">Entre com seus dados ou crie uma nova conta de gestor.</p>
+        <input type="email" id="auth-email" placeholder="Seu e-mail profissional">
+        <input type="password" id="auth-password" placeholder="Sua senha secreta">
+        <button class="btn-primary" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR NO SISTEMA</button>
+        <button class="btn-dark" onclick="handleSignUp()"><i class="fas fa-user-plus"></i> CRIAR MINHA CONTA</button>
     </div>
 
     <!-- MENU PRINCIPAL -->
     <div id="main-menu" class="hidden">
-        <div class="logo-container"><div class="logo-text">KONECT</div><div class="logo-sub">GESTOR</div></div>
+        <div class="logo-container"><h1 class="logo-text">KONECT</h1><span class="logo-sub">PAINEL DO GESTOR</span></div>
         <div class="menu-grid">
-            <button class="btn-primary" onclick="showSection('sec-cadastro')"><i class="fas fa-user-plus"></i> NOVO CLIENTE</button>
-            <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-search"></i> CONSULTA</button>
-            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-key"></i> CHAVE PIX</button>
-            <button class="btn-danger" onclick="checkExpired()"><i class="fas fa-clock"></i> VENCIDOS</button>
-            <button class="btn-exit" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> SAIR E SALVAR</button>
+            <button class="btn-primary" onclick="showSection('sec-cadastro')"><i class="fas fa-plus"></i> NOVO CLIENTE</button>
+            <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-users"></i> CLIENTES</button>
+            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-qrcode"></i> MINHA CHAVE PIX</button>
+            <button class="btn-danger" onclick="showSection('sec-vencidos')"><i class="fas fa-exclamation-triangle"></i> VENCIDOS</button>
+            <button class="btn-dark" style="grid-column: span 2;" onclick="handleLogout()"><i class="fas fa-power-off"></i> SAIR E SALVAR</button>
         </div>
     </div>
 
-    <!-- SEÇÕES ADICIONAIS -->
+    <!-- SEÇÕES DO SISTEMA -->
     <div id="sec-cadastro" class="card hidden">
-        <h3 id="form-title">Cadastrar Cliente</h3>
+        <h3><i class="fas fa-user-edit"></i> Dados do Cliente</h3>
         <input type="hidden" id="c-id">
-        <input type="text" id="c-nome" placeholder="Nome">
-        <input type="text" id="c-tel" placeholder="WhatsApp (DDI+DDD+Num)">
+        <input type="text" id="c-nome" placeholder="Nome do Cliente">
+        <input type="text" id="c-tel" placeholder="WhatsApp (Ex: 5514999999999)">
         <input type="date" id="c-venc">
-        <input type="number" id="c-valor" placeholder="Valor R$">
-        <input type="text" id="c-servidor" placeholder="Servidor">
-        <button class="btn-success" onclick="saveClient()">SALVAR NA NUVEM</button>
-        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
+        <input type="number" id="c-valor" placeholder="Valor da Mensalidade R$">
+        <input type="text" id="c-servidor" placeholder="Nome do Servidor/Lista">
+        <button class="btn-success" onclick="saveClient()">SALVAR DADOS NA NUVEM</button>
+        <button class="btn-dark" onclick="goHome()">CANCELAR</button>
     </div>
 
     <div id="sec-consulta" class="card hidden">
+        <h3><i class="fas fa-list"></i> Meus Clientes</h3>
+        <input type="text" id="searchBar" placeholder="Procurar por nome..." onkeyup="filterClients()">
         <div id="clientList"></div>
-        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR AO MENU</button>
+    </div>
+
+    <div id="sec-vencidos" class="card hidden">
+        <h3 style="color:var(--danger)"><i class="fas fa-clock"></i> Clientes Vencidos</h3>
+        <div id="expiredList"></div>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR AO MENU</button>
     </div>
 
     <div id="sec-pix" class="card hidden">
-        <input type="text" id="pixKeyField" placeholder="Sua chave PIX">
-        <button class="btn-success" onclick="savePix()">SALVAR PIX</button>
-        <button onclick="goHome()" style="margin-top:10px">VOLTAR</button>
+        <h3><i class="fas fa-university"></i> Configurar Recebimento</h3>
+        <p style="font-size:0.8rem; color:#666">Esta chave será enviada automaticamente nas cobranças via WhatsApp.</p>
+        <input type="text" id="pixKeyField" placeholder="Digite sua Chave PIX aqui">
+        <button class="btn-success" onclick="savePix()">SALVAR CHAVE PIX</button>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR</button>
     </div>
 </div>
 
-<div class="footer-banner">KONECT GESTÃO - SISTEMA DE ALTA PERFORMANCE</div>
+<div class="footer-banner">KONECT GESTÃO - TECNOLOGIA PARA REVENDEDORES</div>
 
 <script>
+    // CREDENCIAIS
     const _URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
     const _KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
     const supabase = window.supabase.createClient(_URL, _KEY);
@@ -105,36 +109,36 @@
     async function handleSignUp() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) alert("Erro: " + error.message);
-        else alert("Conta criada! Verifique seu e-mail.");
+        if(!email || !password) return alert("Preencha email e senha!");
+        
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) alert("Erro ao criar conta: " + error.message);
+        else alert("Conta criada com sucesso! Você já pode entrar.");
     }
 
     async function handleLogin() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) alert("Erro: " + error.message);
-        else { currentUser = data.user; initApp(); }
-    }
+        if(!email || !password) return alert("Preencha email e senha!");
 
-    async function handleGoogleLogin() {
-        await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) alert("Erro de acesso: " + error.message);
+        else { currentUser = data.user; initApp(); }
     }
 
     async function handleLogout() { await supabase.auth.signOut(); location.reload(); }
 
-    // --- LÓGICA DO APP ---
+    // --- LÓGICA CORE ---
     async function initApp() {
         await loadData();
         showSection('main-menu');
     }
 
     async function loadData() {
-        const { data } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
-        clients = data || [];
-        const savedPix = localStorage.getItem('pix_' + currentUser.id);
-        if(savedPix) document.getElementById('pixKeyField').value = savedPix;
+        const { data, error } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
+        if(!error) clients = data;
+        const pix = localStorage.getItem('pix_' + currentUser.id);
+        if(pix) document.getElementById('pixKeyField').value = pix;
     }
 
     async function saveClient() {
@@ -148,34 +152,39 @@
             user_id: currentUser.id
         };
 
-        let error;
-        if(id) ({ error } = await supabase.from('clientes').update(payload).eq('id', id));
-        else ({ error } = await supabase.from('clientes').insert([payload]));
+        let res;
+        if(id) res = await supabase.from('clientes').update(payload).eq('id', id);
+        else res = await supabase.from('clientes').insert([payload]);
 
-        if(error) alert("Erro ao salvar: " + error.message);
-        else { alert("Salvo na Nuvem!"); await loadData(); goHome(); }
+        if(res.error) alert("Erro ao salvar: " + res.error.message);
+        else { await loadData(); goHome(); }
     }
 
-    function renderClients(listData) {
-        const list = document.getElementById('clientList');
-        list.innerHTML = listData.length ? '' : '<p style="text-align:center">Nenhum cliente.</p>';
-        listData.forEach(c => {
+    function renderClients(target, dataList) {
+        const container = document.getElementById(target);
+        container.innerHTML = dataList.length ? '' : '<p style="text-align:center; color:#999">Nenhum registro encontrado.</p>';
+        
+        dataList.forEach(c => {
+            const isExpired = new Date(c.vencimento) < new Date().setHours(0,0,0,0);
             const div = document.createElement('div');
             div.className = 'client-item';
             div.innerHTML = `
-                <div><b>${c.nome}</b><br><small>${c.vencimento.split('-').reverse().join('/')}</small></div>
-                <div style="display:flex; gap:5px">
-                    <button class="btn-success" style="width:40px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
-                    <button class="btn-dark" style="width:40px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
+                <div>
+                    <b style="color:var(--dark)">${c.nome}</b><br>
+                    <small>Venc: <span style="color:${isExpired ? 'red' : 'green'}">${c.vencimento.split('-').reverse().join('/')}</span></small>
+                </div>
+                <div style="display:flex; gap:8px">
+                    <button class="btn-success" style="width:40px; padding:8px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn-dark" style="width:40px; padding:8px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
                 </div>
             `;
-            list.appendChild(div);
+            container.appendChild(div);
         });
     }
 
     function sendWhatsApp(tel, nome, venc, valor) {
         const pix = document.getElementById('pixKeyField').value;
-        const msg = `Olá *${nome}*!\nSeu acesso vence dia *${venc.split('-').reverse().join('/')}*.\nValor: R$ ${valor}\nPIX: ${pix}`;
+        const msg = `Olá *${nome}*!\n\nLembrete de renovação do seu acesso *Konect TV*.\n\n📅 *Vencimento:* ${venc.split('-').reverse().join('/')}\n💰 *Valor:* R$ ${valor}\n\n🔑 *PIX para pagamento:* ${pix}\n\nApós o pagamento, envie o comprovante aqui!`;
         window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -192,26 +201,36 @@
 
     function savePix() {
         localStorage.setItem('pix_' + currentUser.id, document.getElementById('pixKeyField').value);
-        alert("PIX salvo!"); goHome();
+        alert("Chave PIX atualizada!");
+        goHome();
     }
 
     function showSection(id) {
-        document.querySelectorAll('.card, #main-menu, #sec-auth').forEach(s => s.classList.add('hidden'));
+        document.querySelectorAll('.card, #main-menu').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        if(id === 'sec-consulta') renderClients(clients);
+        if(id === 'sec-consulta') renderClients('clientList', clients);
+        if(id === 'sec-vencidos') {
+            const today = new Date().setHours(0,0,0,0);
+            renderClients('expiredList', clients.filter(c => new Date(c.vencimento) < today));
+        }
     }
 
-    function goHome() { 
+    function goHome() {
         document.getElementById('c-id').value = '';
-        showSection('main-menu'); 
+        document.querySelectorAll('#sec-cadastro input').forEach(i => i.value = '');
+        showSection('main-menu');
     }
 
-    async function checkSession() {
+    function filterClients() {
+        const term = document.getElementById('searchBar').value.toLowerCase();
+        renderClients('clientList', clients.filter(c => c.nome.toLowerCase().includes(term)));
+    }
+
+    // VERIFICA SESSÃO AO ABRIR
+    (async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) { currentUser = session.user; initApp(); }
-    }
-
-    checkSession();
+    })();
 </script>
 </body>
 </html>
