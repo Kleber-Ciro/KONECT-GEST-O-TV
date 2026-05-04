@@ -28,7 +28,6 @@
         .footer-banner { position: fixed; bottom: 0; width: 100%; background: #900; color: white; overflow: hidden; white-space: nowrap; padding: 12px 0; font-size: 0.9rem; font-weight: bold; z-index: 1000; }
         .banner-scroll { display: inline-block; animation: scroll 25s linear infinite; padding-left: 100%; }
         @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .badge { padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; margin-left: 5px; color: white; }
     </style>
 </head>
 <body>
@@ -36,106 +35,102 @@
 <header>KONECT GESTÃO CLOUD</header>
 
 <div class="container">
-    <!-- LOGIN -->
+    <!-- LOGIN (Segurança garantida pelo Supabase) -->
     <div id="view-login" class="card">
-        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">ACESSO SEGURO</span></div>
-        <input type="email" id="email" placeholder="E-mail">
-        <input type="password" id="pass" placeholder="Senha">
-        <button class="btn-main" onclick="acaoLogin()">ENTRAR</button>
-        <button class="btn-sec" onclick="acaoCriar()">CRIAR CONTA</button>
-        <p id="status-msg" style="text-align:center; font-size:0.8rem; color: #666; margin-top: 15px;">Conectando...</p>
+        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">BANCO DE DADOS EM NUVEM</span></div>
+        <input type="email" id="email" placeholder="Seu E-mail">
+        <input type="password" id="pass" placeholder="Sua Senha">
+        <button class="btn-main" onclick="acaoLogin()">ENTRAR NO PAINEL</button>
+        <button class="btn-sec" onclick="acaoCriar()">CRIAR NOVO ACESSO</button>
     </div>
 
-    <!-- PAINEL -->
+    <!-- PAINEL PRINCIPAL -->
     <div id="view-panel" class="hidden">
-        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">GESTOR PRO</span></div>
+        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">PAINEL DE CONTROLE</span></div>
         <div class="menu-grid">
-            <button class="btn-main" onclick="abrir('view-add')"><i class="fas fa-plus"></i> NOVO</button>
-            <button class="btn-main" style="background:var(--success)" onclick="abrir('view-list')"><i class="fas fa-search"></i> CONSULTA</button>
-            <button class="btn-main" style="background:var(--warning); color:black" onclick="abrir('view-vencendo')">
-                <i class="fas fa-hourglass-half"></i> PRÓX. VENCIMENTOS
-            </button>
-            <button class="btn-main" style="background:var(--danger)" onclick="abrir('view-expired')"><i class="fas fa-clock"></i> VENCIDOS</button>
-            <button class="btn-main" style="background:#6f42c1" onclick="abrir('view-pix')"><i class="fas fa-qrcode"></i> PIX</button>
-            <button class="btn-sec" onclick="abrir('view-xml')"><i class="fas fa-file-export"></i> XML DATA</button>
-            <button class="btn-sec" style="grid-column: span 2;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> SAIR E SALVAR</button>
+            <button class="btn-main" onclick="abrir('view-add')"><i class="fas fa-plus"></i> NOVO CLIENTE</button>
+            <button class="btn-main" style="background:var(--success)" onclick="abrir('view-list')"><i class="fas fa-search"></i> CONSULTA/EDITAR</button>
+            <button class="btn-main" style="background:var(--warning); color:black" onclick="abrir('view-vencendo')"><i class="fas fa-bell"></i> VENCEM EM 3 DIAS</button>
+            <button class="btn-main" style="background:var(--danger)" onclick="abrir('view-expired')"><i class="fas fa-exclamation-triangle"></i> JÁ VENCIDOS</button>
+            <button class="btn-main" style="background:#6f42c1" onclick="abrir('view-pix')"><i class="fas fa-qrcode"></i> MINHA CHAVE PIX</button>
+            <button class="btn-sec" onclick="abrir('view-xml')"><i class="fas fa-file-code"></i> BACKUP XML</button>
+            <button class="btn-sec" style="grid-column: span 2;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> SAIR E SINCRONIZAR</button>
         </div>
     </div>
 
-    <!-- CADASTRO / EDIÇÃO -->
+    <!-- CADASTRO E EDIÇÃO -->
     <div id="view-add" class="card hidden">
-        <h3 id="form-title">Novo Cliente</h3>
+        <h3 id="form-title">Dados do Cliente</h3>
         <input type="hidden" id="edit-id">
-        <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="text" id="tel" placeholder="WhatsApp (5514...)">
+        <input type="text" id="nome" placeholder="Nome do Cliente">
+        <input type="text" id="tel" placeholder="WhatsApp (DDD+Número)">
         <input type="date" id="venc">
-        <input type="number" id="valor" placeholder="Valor R$">
-        <input type="number" id="acessos" placeholder="Nº de Acessos">
-        <input type="text" id="pacote" placeholder="Pacote">
-        <input type="text" id="app" placeholder="Aplicativo">
-        <input type="text" id="servidor" placeholder="Servidor">
-        <button class="btn-save" onclick="salvarCliente()">SALVAR NA NUVEM</button>
-        <button class="btn-sec" onclick="abrir('view-panel')">CANCELAR</button>
+        <input type="number" id="valor" placeholder="Valor da Assinatura R$">
+        <input type="number" id="acessos" placeholder="Quantidade de Telas">
+        <input type="text" id="pacote" placeholder="Plano/Pacote">
+        <input type="text" id="app" placeholder="App Utilizado">
+        <input type="text" id="servidor" placeholder="Servidor de Origem">
+        <button class="btn-save" onclick="salvarCliente()"><i class="fas fa-cloud-upload-alt"></i> SALVAR NA NUVEM</button>
+        <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- CONSULTA -->
+    <!-- LISTAS (GERAL, VENCENDO, VENCIDOS) -->
     <div id="view-list" class="card hidden">
-        <h3>Consulta Geral</h3>
-        <input type="text" placeholder="🔍 Buscar cliente..." onkeyup="renderLista('lista-geral', this.value)">
+        <h3>Lista Geral</h3>
+        <input type="text" placeholder="🔍 Pesquisar por nome..." onkeyup="renderLista('lista-geral', this.value)">
         <div id="lista-geral" style="margin-top:15px"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- VENCENDO EM 3 DIAS -->
     <div id="view-vencendo" class="card hidden">
-        <h3 style="color:var(--warning)">Vencendo em até 03 dias</h3>
+        <h3 style="color:var(--warning)">Alerta: Vencendo em breve</h3>
         <div id="lista-vencendo"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- VENCIDOS -->
     <div id="view-expired" class="card hidden">
-        <h3 style="color:var(--danger)">Clientes Vencidos</h3>
+        <h3 style="color:var(--danger)">Vencidos - Cobrança Urgente</h3>
         <div id="lista-vencidos"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- XML IMPORT/EXPORT -->
-    <div id="view-xml" class="card hidden">
-        <h3>Importar/Exportar XML</h3>
-        <button class="btn-main" onclick="exportarXML()"><i class="fas fa-download"></i> EXPORTAR BACKUP</button>
-        <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:20px;">
-            <p style="font-size:0.8rem">Selecionar arquivo XML para importar:</p>
-            <input type="file" id="file-xml" accept=".xml">
-            <button class="btn-save" onclick="importarXML()"><i class="fas fa-upload"></i> IMPORTAR XML</button>
-        </div>
+    <!-- CONFIGURAÇÕES PIX -->
+    <div id="view-pix" class="card hidden">
+        <h3>Configurar Pagamento</h3>
+        <p style="font-size: 0.8rem; color: #666;">A chave cadastrada abaixo será incluída automaticamente na mensagem de cobrança enviada aos clientes.</p>
+        <input type="text" id="chave-pix" placeholder="Cole aqui sua Chave PIX">
+        <button class="btn-save" onclick="salvarPix()">SALVAR CONFIGURAÇÃO</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- PIX -->
-    <div id="view-pix" class="card hidden">
-        <h3>Chave PIX</h3>
-        <input type="text" id="chave-pix" placeholder="Sua chave PIX">
-        <button class="btn-save" onclick="salvarPix()">SALVAR PIX</button>
+    <!-- XML -->
+    <div id="view-xml" class="card hidden">
+        <h3>Backup e Sincronia XML</h3>
+        <button class="btn-main" onclick="exportarXML()">EXPORTAR PARA XML</button>
+        <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:20px;">
+            <input type="file" id="file-xml" accept=".xml">
+            <button class="btn-save" style="margin-top:10px" onclick="importarXML()">IMPORTAR XML PARA NUVEM</button>
+        </div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 </div>
 
 <div class="footer-banner">
     <div class="banner-scroll">
-        🚀 APOIE O DESENVOLVEDOR: <a href="https://mpago.la/2GLQsN3" target="_blank" style="color:var(--gold)">CLIQUE PARA COLABORAR COM APPS FREE</a> — KONECT GESTÃO — ACESSO EM QUALQUER LUGAR!
+        🚀 KONECT GESTÃO CLOUD: DADOS SEGUROS NO SUPABASE — 🔄 SINCRONIZAÇÃO AUTOMÁTICA EM TODOS OS SEUS DISPOSITIVOS — 📱 VERSÃO 2.5
     </div>
 </div>
 
 <script>
+    // Configurações do Banco de Dados Supabase do Kleber
     const SB_URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
     const SB_KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
     let sb; let user = null; let dadosClientes = [];
 
+    // Inicialização segura
     const conectar = setInterval(() => {
         if (window.supabase) {
             sb = window.supabase.createClient(SB_URL, SB_KEY);
-            document.getElementById('status-msg').innerText = "Sistema Online ✅";
             verificarSessao(); clearInterval(conectar);
         }
     }, 500);
@@ -143,13 +138,13 @@
     async function acaoLogin() {
         const e = document.getElementById('email').value; const p = document.getElementById('pass').value;
         const { data, error } = await sb.auth.signInWithPassword({ email: e, password: p });
-        if(error) alert("Erro: " + error.message); else { user = data.user; carregarDados(); }
+        if(error) alert("Falha no login: " + error.message); else { user = data.user; carregarDados(); }
     }
 
     async function acaoCriar() {
         const e = document.getElementById('email').value; const p = document.getElementById('pass').value;
         const { error } = await sb.auth.signUp({ email: e, password: p });
-        if(error) alert(error.message); else alert("Confirme seu e-mail para ativar!");
+        if(error) alert(error.message); else alert("Solicitação enviada! Verifique seu e-mail.");
     }
 
     async function carregarDados() {
@@ -168,13 +163,16 @@
             acessos: document.getElementById('acessos').value, pacote: document.getElementById('pacote').value,
             app: document.getElementById('app').value, servidor: document.getElementById('servidor').value, user_id: user.id
         };
+        if(!info.nome || !info.vencimento) return alert("Nome e Vencimento são obrigatórios!");
+        
         if(id) await sb.from('clientes').update(info).eq('id', id);
         else await sb.from('clientes').insert([info]);
+        
         limparCampos(); carregarDados();
     }
 
     async function excluirCliente(id) {
-        if(confirm("Deseja excluir este cliente permanentemente?")) {
+        if(confirm("Deseja apagar permanentemente este cliente do seu banco de dados?")) {
             await sb.from('clientes').delete().eq('id', id); carregarDados();
         }
     }
@@ -200,21 +198,24 @@
             const item = document.createElement('div');
             item.className = 'client-card';
             item.innerHTML = `
-                <div><b>${c.nome}</b><br><small>${c.vencimento.split('-').reverse().join('/')}</small></div>
+                <div><b>${c.nome}</b><br><small>Venc: ${c.vencimento.split('-').reverse().join('/')}</small></div>
                 <div style="display:flex; gap:5px">
-                    <button class="btn-save" style="width:40px; padding:8px" onclick="zap('${c.telefone}','${c.nome}','${c.vencimento}','${c.valor}')"><i class="fab fa-whatsapp"></i></button>
-                    <button class="btn-edit" onclick="prepararEdicao(${c.id})"><i class="fas fa-edit"></i></button>
-                    <button class="btn-del" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button>
+                    <button class="btn-save" style="width:40px; padding:8px" onclick="enviarCobranca('${c.telefone}','${c.nome}','${c.vencimento}','${c.valor}')" title="Cobrar via WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn-edit" onclick="prepararEdicao(${c.id})" title="Editar"><i class="fas fa-edit"></i></button>
+                    <button class="btn-del" onclick="excluirCliente(${c.id})" title="Excluir"><i class="fas fa-trash"></i></button>
                 </div>
             `;
             div.appendChild(item);
         });
     }
 
-    function zap(tel, nome, venc, valor) {
-        const pix = document.getElementById('chave-pix').value;
-        const msg = `Olá *${nome}*!\nSeu acesso vence dia *${venc.split('-').reverse().join('/')}*.\nValor: R$ ${valor}\nPIX: ${pix}`;
-        window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`);
+    function enviarCobranca(tel, nome, venc, valor) {
+        const pix = document.getElementById('chave-pix').value || "Chave não cadastrada no app.";
+        const dataFormatada = venc.split('-').reverse().join('/');
+        
+        const texto = `Olá *${nome}*!\n\nPassando para lembrar que sua assinatura *Konect TV* vence no dia *${dataFormatada}*.\n\n💰 *Valor para renovação:* R$ ${valor}\n🔑 *Chave PIX:* ${pix}\n\nApós o pagamento, por favor envie o comprovante por aqui para reativarmos seu acesso! 🚀`;
+        
+        window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(texto)}`);
     }
 
     function prepararEdicao(id) {
@@ -224,7 +225,7 @@
         document.getElementById('venc').value = c.vencimento; document.getElementById('valor').value = c.valor;
         document.getElementById('acessos').value = c.acessos || ''; document.getElementById('pacote').value = c.pacote || '';
         document.getElementById('app').value = c.app || ''; document.getElementById('servidor').value = c.servidor || '';
-        document.getElementById('form-title').innerText = "Editar Cliente";
+        document.getElementById('form-title').innerText = "Editando Cliente";
         abrir('view-add');
     }
 
@@ -236,12 +237,12 @@
         xml += '</clientes>';
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([xml], {type:'text/xml'}));
-        link.download = 'konect_backup.xml'; link.click();
+        link.download = `konect_backup_${new Date().toLocaleDateString()}.xml`; link.click();
     }
 
     function importarXML() {
         const file = document.getElementById('file-xml').files[0];
-        if(!file) return alert("Selecione um arquivo!");
+        if(!file) return alert("Selecione um arquivo XML!");
         const reader = new FileReader();
         reader.onload = async (e) => {
             const parser = new DOMParser();
@@ -256,7 +257,7 @@
                     user_id: user.id
                 }]);
             }
-            alert("Importação concluída!"); carregarDados();
+            alert("Sincronização com XML concluída!"); carregarDados();
         };
         reader.readAsText(file);
     }
@@ -272,13 +273,21 @@
     function limparCampos() {
         document.getElementById('edit-id').value = '';
         document.querySelectorAll('#view-add input').forEach(i => i.value = '');
-        document.getElementById('form-title').innerText = "Novo Cliente";
+        document.getElementById('form-title').innerText = "Dados do Cliente";
     }
 
-    function salvarPix() { localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); alert("PIX Salvo!"); abrir('view-panel'); }
-    async function verificarSessao() { const { data } = await sb.auth.getSession(); if(data.session) { user = data.session.user; carregarDados(); } }
+    function salvarPix() { 
+        localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); 
+        alert("Chave PIX vinculada ao seu usuário!"); 
+        abrir('view-panel'); 
+    }
+
+    async function verificarSessao() { 
+        const { data } = await sb.auth.getSession(); 
+        if(data.session) { user = data.session.user; carregarDados(); } 
+    }
+
     async function logout() { await sb.auth.signOut(); location.reload(); }
 </script>
 </body>
 </html>
-       
