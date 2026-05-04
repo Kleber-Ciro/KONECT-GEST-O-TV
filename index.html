@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konect Gestão - Login Único</title>
-    <!-- BIBLIOTECA COM CARREGAMENTO GARANTIDO -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>Konect Gestão Cloud</title>
+    <!-- CARREGAMENTO ROBUSTO DA BIBLIOTECA -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
         :root { --primary: #007bff; --success: #28a745; --danger: #dc3545; --dark: #1a1a1a; }
@@ -31,112 +31,113 @@
 </head>
 <body>
 
-<header><i class="fas fa-lock"></i> KONECT GESTÃO CLOUD</header>
+<header><i class="fas fa-cloud"></i> KONECT GESTÃO CLOUD</header>
 
 <div class="container">
-    <!-- TELA DE ACESSO (EMAIL/SENHA) -->
+    <!-- TELA DE LOGIN -->
     <div id="sec-auth" class="card">
         <div class="logo-container">
             <h1 class="logo-text">KONECT</h1>
-            <span class="logo-sub">CONTROLE DE ACESSO</span>
+            <span class="logo-sub">ACESSO DO GESTOR</span>
         </div>
-        <p style="text-align:center; color:#666; font-size: 0.9rem;">Entre com seus dados ou crie uma nova conta de gestor.</p>
-        <input type="email" id="auth-email" placeholder="Seu e-mail profissional">
-        <input type="password" id="auth-password" placeholder="Sua senha secreta">
-        <button class="btn-primary" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR NO SISTEMA</button>
-        <button class="btn-dark" onclick="handleSignUp()"><i class="fas fa-user-plus"></i> CRIAR MINHA CONTA</button>
+        <input type="email" id="auth-email" placeholder="E-mail">
+        <input type="password" id="auth-password" placeholder="Senha">
+        <button class="btn-primary" id="btn-login" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR</button>
+        <button class="btn-dark" id="btn-signup" onclick="handleSignUp()"><i class="fas fa-user-plus"></i> CRIAR CONTA</button>
     </div>
 
-    <!-- MENU PRINCIPAL -->
+    <!-- MENU -->
     <div id="main-menu" class="hidden">
-        <div class="logo-container"><h1 class="logo-text">KONECT</h1><span class="logo-sub">PAINEL DO GESTOR</span></div>
+        <div class="logo-container"><h1 class="logo-text">KONECT</h1><span class="logo-sub">PAINEL PRINCIPAL</span></div>
         <div class="menu-grid">
             <button class="btn-primary" onclick="showSection('sec-cadastro')"><i class="fas fa-plus"></i> NOVO CLIENTE</button>
             <button class="btn-success" onclick="showSection('sec-consulta')"><i class="fas fa-users"></i> CLIENTES</button>
-            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-qrcode"></i> MINHA CHAVE PIX</button>
-            <button class="btn-danger" onclick="showSection('sec-vencidos')"><i class="fas fa-exclamation-triangle"></i> VENCIDOS</button>
-            <button class="btn-dark" style="grid-column: span 2;" onclick="handleLogout()"><i class="fas fa-power-off"></i> SAIR E SALVAR</button>
+            <button class="btn-warning" onclick="showSection('sec-pix')"><i class="fas fa-qrcode"></i> CHAVE PIX</button>
+            <button class="btn-danger" onclick="showSection('sec-vencidos')"><i class="fas fa-clock"></i> VENCIDOS</button>
+            <button class="btn-dark" style="grid-column: span 2;" onclick="handleLogout()"><i class="fas fa-power-off"></i> SAIR</button>
         </div>
     </div>
 
-    <!-- SEÇÕES DO SISTEMA -->
+    <!-- SEÇÕES -->
     <div id="sec-cadastro" class="card hidden">
-        <h3><i class="fas fa-user-edit"></i> Dados do Cliente</h3>
+        <h3>Cadastro de Cliente</h3>
         <input type="hidden" id="c-id">
         <input type="text" id="c-nome" placeholder="Nome do Cliente">
-        <input type="text" id="c-tel" placeholder="WhatsApp (Ex: 5514999999999)">
+        <input type="text" id="c-tel" placeholder="WhatsApp (DDI+DDD+NÚMERO)">
         <input type="date" id="c-venc">
-        <input type="number" id="c-valor" placeholder="Valor da Mensalidade R$">
-        <input type="text" id="c-servidor" placeholder="Nome do Servidor/Lista">
-        <button class="btn-success" onclick="saveClient()">SALVAR DADOS NA NUVEM</button>
+        <input type="number" id="c-valor" placeholder="Valor R$">
+        <input type="text" id="c-servidor" placeholder="Servidor">
+        <button class="btn-success" onclick="saveClient()">SALVAR NA NUVEM</button>
         <button class="btn-dark" onclick="goHome()">CANCELAR</button>
     </div>
 
     <div id="sec-consulta" class="card hidden">
-        <h3><i class="fas fa-list"></i> Meus Clientes</h3>
-        <input type="text" id="searchBar" placeholder="Procurar por nome..." onkeyup="filterClients()">
+        <input type="text" id="searchBar" placeholder="Pesquisar..." onkeyup="filterClients()">
         <div id="clientList"></div>
-        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR AO MENU</button>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
     <div id="sec-vencidos" class="card hidden">
-        <h3 style="color:var(--danger)"><i class="fas fa-clock"></i> Clientes Vencidos</h3>
+        <h3 style="color:red">Vencidos</h3>
         <div id="expiredList"></div>
-        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR AO MENU</button>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 
     <div id="sec-pix" class="card hidden">
-        <h3><i class="fas fa-university"></i> Configurar Recebimento</h3>
-        <p style="font-size:0.8rem; color:#666">Esta chave será enviada automaticamente nas cobranças via WhatsApp.</p>
-        <input type="text" id="pixKeyField" placeholder="Digite sua Chave PIX aqui">
-        <button class="btn-success" onclick="savePix()">SALVAR CHAVE PIX</button>
-        <button class="btn-dark" onclick="goHome()" style="margin-top:15px">VOLTAR</button>
+        <h3>Configurar PIX</h3>
+        <input type="text" id="pixKeyField" placeholder="Sua Chave PIX">
+        <button class="btn-success" onclick="savePix()">SALVAR PIX</button>
+        <button class="btn-dark" onclick="goHome()" style="margin-top:10px">VOLTAR</button>
     </div>
 </div>
 
-<div class="footer-banner">KONECT GESTÃO - TECNOLOGIA PARA REVENDEDORES</div>
+<div class="footer-banner">SISTEMA KONECT GESTÃO - 2026</div>
 
 <script>
-    // CREDENCIAIS
-    const _URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
-    const _KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
-    const supabase = window.supabase.createClient(_URL, _KEY);
-
+    // Inicialização segura
+    let supabase;
     let currentUser = null;
     let clients = [];
 
-    // --- AUTENTICAÇÃO ---
-    async function handleSignUp() {
-        const email = document.getElementById('auth-email').value;
-        const password = document.getElementById('auth-password').value;
-        if(!email || !password) return alert("Preencha email e senha!");
-        
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        if (error) alert("Erro ao criar conta: " + error.message);
-        else alert("Conta criada com sucesso! Você já pode entrar.");
-    }
+    const _URL = "https://jjdpmtfoqpubbkghhvfc.supabase.co";
+    const _KEY = "sb_publishable_wkYAu6MHnZ1XbZzzV3pfSQ_mfJrFh_7";
+
+    window.onload = () => {
+        try {
+            supabase = window.supabase.createClient(_URL, _KEY);
+            checkSession();
+        } catch (e) {
+            console.error("Erro ao carregar Supabase:", e);
+            alert("Erro técnico ao carregar o sistema. Tente atualizar a página.");
+        }
+    };
 
     async function handleLogin() {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        if(!email || !password) return alert("Preencha email e senha!");
-
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) alert("Erro de acesso: " + error.message);
+        if (error) alert("Acesso negado: " + error.message);
         else { currentUser = data.user; initApp(); }
+    }
+
+    async function handleSignUp() {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) alert("Erro: " + error.message);
+        else alert("Conta criada! Já pode clicar em ENTRAR.");
     }
 
     async function handleLogout() { await supabase.auth.signOut(); location.reload(); }
 
-    // --- LÓGICA CORE ---
     async function initApp() {
         await loadData();
         showSection('main-menu');
     }
 
     async function loadData() {
-        const { data, error } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
-        if(!error) clients = data;
+        const { data } = await supabase.from('clientes').select('*').eq('user_id', currentUser.id);
+        clients = data || [];
         const pix = localStorage.getItem('pix_' + currentUser.id);
         if(pix) document.getElementById('pixKeyField').value = pix;
     }
@@ -152,30 +153,24 @@
             user_id: currentUser.id
         };
 
-        let res;
-        if(id) res = await supabase.from('clientes').update(payload).eq('id', id);
-        else res = await supabase.from('clientes').insert([payload]);
+        if(id) await supabase.from('clientes').update(payload).eq('id', id);
+        else await supabase.from('clientes').insert([payload]);
 
-        if(res.error) alert("Erro ao salvar: " + res.error.message);
-        else { await loadData(); goHome(); }
+        await loadData();
+        goHome();
     }
 
-    function renderClients(target, dataList) {
+    function renderClients(target, list) {
         const container = document.getElementById(target);
-        container.innerHTML = dataList.length ? '' : '<p style="text-align:center; color:#999">Nenhum registro encontrado.</p>';
-        
-        dataList.forEach(c => {
-            const isExpired = new Date(c.vencimento) < new Date().setHours(0,0,0,0);
+        container.innerHTML = list.length ? '' : '<p style="text-align:center">Vazio.</p>';
+        list.forEach(c => {
             const div = document.createElement('div');
             div.className = 'client-item';
             div.innerHTML = `
-                <div>
-                    <b style="color:var(--dark)">${c.nome}</b><br>
-                    <small>Venc: <span style="color:${isExpired ? 'red' : 'green'}">${c.vencimento.split('-').reverse().join('/')}</span></small>
-                </div>
-                <div style="display:flex; gap:8px">
-                    <button class="btn-success" style="width:40px; padding:8px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
-                    <button class="btn-dark" style="width:40px; padding:8px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
+                <div><b>${c.nome}</b><br><small>${c.vencimento.split('-').reverse().join('/')}</small></div>
+                <div style="display:flex; gap:5px">
+                    <button class="btn-success" style="width:40px" onclick="sendWhatsApp('${c.telefone}', '${c.nome}', '${c.vencimento}', '${c.valor}')"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn-dark" style="width:40px" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
                 </div>
             `;
             container.appendChild(div);
@@ -184,7 +179,7 @@
 
     function sendWhatsApp(tel, nome, venc, valor) {
         const pix = document.getElementById('pixKeyField').value;
-        const msg = `Olá *${nome}*!\n\nLembrete de renovação do seu acesso *Konect TV*.\n\n📅 *Vencimento:* ${venc.split('-').reverse().join('/')}\n💰 *Valor:* R$ ${valor}\n\n🔑 *PIX para pagamento:* ${pix}\n\nApós o pagamento, envie o comprovante aqui!`;
+        const msg = `Olá *${nome}*!\nVencimento: ${venc.split('-').reverse().join('/')}\nValor: R$ ${valor}\nPIX: ${pix}`;
         window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -201,8 +196,7 @@
 
     function savePix() {
         localStorage.setItem('pix_' + currentUser.id, document.getElementById('pixKeyField').value);
-        alert("Chave PIX atualizada!");
-        goHome();
+        alert("PIX salvo!"); goHome();
     }
 
     function showSection(id) {
@@ -215,10 +209,9 @@
         }
     }
 
-    function goHome() {
-        document.getElementById('c-id').value = '';
+    function goHome() { 
         document.querySelectorAll('#sec-cadastro input').forEach(i => i.value = '');
-        showSection('main-menu');
+        showSection('main-menu'); 
     }
 
     function filterClients() {
@@ -226,11 +219,10 @@
         renderClients('clientList', clients.filter(c => c.nome.toLowerCase().includes(term)));
     }
 
-    // VERIFICA SESSÃO AO ABRIR
-    (async () => {
+    async function checkSession() {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) { currentUser = session.user; initApp(); }
-    })();
+    }
 </script>
 </body>
 </html>
