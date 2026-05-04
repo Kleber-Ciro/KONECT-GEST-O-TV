@@ -15,6 +15,12 @@
         .logo-area { text-align: center; margin-bottom: 20px; }
         .logo-text { font-size: 2.2rem; font-weight: 900; color: var(--dark); margin: 0; }
         .logo-sub { color: var(--primary); font-weight: bold; display: block; margin-top: -5px; letter-spacing: 2px; font-size: 0.9rem; }
+        
+        /* Nova Caixa de Destaque */
+        .top-clients-box { background: #e9ecef; border-radius: 10px; padding: 15px; margin: 15px 0; border-left: 5px solid var(--primary); }
+        .top-clients-box h4 { margin-top: 0; color: var(--dark); font-size: 0.9rem; text-transform: uppercase; }
+        .top-item { font-size: 0.85rem; border-bottom: 1px solid #dee2e6; padding: 5px 0; display: flex; justify-content: space-between; }
+
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
         button { padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-main { background: var(--primary); color: white; margin-top: 10px; }
@@ -22,14 +28,16 @@
         .btn-save { background: var(--success); color: white; }
         .btn-del { background: var(--danger); color: white; width: 40px !important; padding: 8px !important; }
         .btn-edit { background: var(--primary); color: white; width: 40px !important; padding: 8px !important; }
+        
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .hidden { display: none !important; }
         .client-card { border: 1px solid #eee; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        
         .footer-banner { position: fixed; bottom: 0; width: 100%; background: #900; color: white; overflow: hidden; white-space: nowrap; padding: 12px 0; font-size: 0.9rem; font-weight: bold; z-index: 1000; }
         .banner-scroll { display: inline-block; animation: scroll 25s linear infinite; padding-left: 100%; }
         @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .filter-group { display: flex; gap: 5px; margin-bottom: 10px; }
-        .filter-group input { margin: 0; }
+        
+        .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -40,59 +48,61 @@
     <!-- LOGIN -->
     <div id="view-login" class="card">
         <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">BANCO DE DADOS EM NUVEM</span></div>
-        <input type="email" id="email" placeholder="Seu E-mail">
-        <input type="password" id="pass" placeholder="Sua Senha">
-        <button class="btn-main" onclick="acaoLogin()">ENTRAR NO PAINEL</button>
-        <button class="btn-sec" onclick="acaoCriar()">CRIAR NOVO ACESSO</button>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Senha">
+        <button class="btn-main" onclick="acaoLogin()">ENTRAR</button>
     </div>
 
     <!-- PAINEL PRINCIPAL -->
     <div id="view-panel" class="hidden">
-        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">PAINEL DE CONTROLE</span></div>
+        <div class="logo-area"><h1 class="logo-text">KONECT</h1><span class="logo-sub">CONTROLE OPERACIONAL</span></div>
+        
+        <!-- CAIXA DE TEXTO: TOP 5 CLIENTES -->
+        <div class="top-clients-box">
+            <h4><i class="fas fa-list-ol"></i> Top 5 Clientes (Alfabética)</h4>
+            <div id="top-5-list">Carregando...</div>
+        </div>
+
         <div class="menu-grid">
-            <button class="btn-main" onclick="abrir('view-add')"><i class="fas fa-plus"></i> NOVO CLIENTE</button>
-            <button class="btn-main" style="background:var(--success)" onclick="abrir('view-list')"><i class="fas fa-search"></i> CONSULTA/EDITAR</button>
-            <button class="btn-main" style="background:var(--warning); color:black" onclick="abrir('view-vencendo')"><i class="fas fa-bell"></i> VENCEM EM 3 DIAS</button>
-            <button class="btn-main" style="background:var(--danger)" onclick="abrir('view-expired')"><i class="fas fa-exclamation-triangle"></i> JÁ VENCIDOS</button>
-            <button class="btn-main" style="background:#6f42c1" onclick="abrir('view-pix')"><i class="fas fa-qrcode"></i> MINHA CHAVE PIX</button>
-            <button class="btn-sec" onclick="abrir('view-xml')"><i class="fas fa-file-code"></i> BACKUP XML</button>
-            <button class="btn-sec" style="grid-column: span 2;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> SAIR E SINCRONIZAR</button>
+            <button class="btn-main" onclick="abrir('view-add')"><i class="fas fa-plus"></i> NOVO</button>
+            <button class="btn-main" style="background:var(--success)" onclick="abrir('view-list')"><i class="fas fa-search"></i> CONSULTA</button>
+            <button class="btn-main" style="background:var(--warning); color:black" onclick="abrir('view-vencendo')"><i class="fas fa-bell"></i> 3 DIAS</button>
+            <button class="btn-main" style="background:var(--danger)" onclick="abrir('view-expired')"><i class="fas fa-clock"></i> VENCIDOS</button>
+            <button class="btn-main" style="background:#6f42c1" onclick="abrir('view-pix')"><i class="fas fa-qrcode"></i> PIX</button>
+            <button class="btn-sec" onclick="abrir('view-xml')"><i class="fas fa-file-code"></i> BACKUP</button>
+            <button class="btn-sec" style="grid-column: span 2;" onclick="logout()">SAIR E SALVAR</button>
         </div>
     </div>
 
-    <!-- CADASTRO E EDIÇÃO -->
+    <!-- CADASTRO / EDIÇÃO -->
     <div id="view-add" class="card hidden">
-        <h3 id="form-title">Dados do Cliente</h3>
+        <h3 id="form-title">Cadastro</h3>
         <input type="hidden" id="edit-id">
-        <input type="text" id="nome" placeholder="Nome do Cliente">
-        <input type="text" id="tel" placeholder="WhatsApp (DDD+Número)">
+        <input type="text" id="nome" placeholder="Nome">
+        <input type="text" id="tel" placeholder="WhatsApp">
         <input type="date" id="venc">
         <input type="number" id="valor" placeholder="Valor R$">
-        <input type="number" id="acessos" placeholder="Quantidade de Telas">
         <select id="pacote">
-            <option value="">Selecione o Pacote</option>
             <option value="COMPLETO">COMPLETO</option>
             <option value="COMPLETO SEM 18+">COMPLETO SEM 18+</option>
         </select>
-        <input type="text" id="app" placeholder="App Utilizado">
-        <input type="text" id="servidor" placeholder="Servidor">
-        <button class="btn-save" onclick="salvarCliente()"><i class="fas fa-cloud-upload-alt"></i> SALVAR NA NUVEM</button>
+        <input type="text" id="app" placeholder="App">
+        <button class="btn-save" onclick="salvarCliente()">SALVAR NA NUVEM</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- CONSULTA COM FILTROS AVANÇADOS -->
+    <!-- CONSULTA COM FILTROS CORRIGIDOS -->
     <div id="view-list" class="card hidden">
-        <h3>Lista de Clientes</h3>
-        <div class="filter-group">
-            <input type="text" id="filtro-nome" placeholder="Busca por nome..." onkeyup="aplicarFiltros()">
-            <input type="date" id="filtro-data" onchange="aplicarFiltros()">
+        <h3>Consulta Geral</h3>
+        <div class="filter-row">
+            <input type="text" id="busca-nome" placeholder="Nome..." onkeyup="aplicarFiltros()">
+            <input type="date" id="busca-data" onchange="aplicarFiltros()">
         </div>
-        <button class="btn-sec" style="padding: 5px; font-size: 0.8rem; margin-bottom: 10px;" onclick="limparFiltros()">Limpar Filtros</button>
         <div id="lista-geral"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
-    <!-- VENCIMENTOS PRÓXIMOS (3 DIAS) -->
+    <!-- VENCIMENTOS PRÓXIMOS (C/ BOTÃO DE COBRANÇA) -->
     <div id="view-vencendo" class="card hidden">
         <h3 style="color:var(--warning)">Vencendo em até 03 dias</h3>
         <div id="lista-vencendo"></div>
@@ -101,7 +111,7 @@
 
     <!-- VENCIDOS -->
     <div id="view-expired" class="card hidden">
-        <h3 style="color:var(--danger)">Vencidos</h3>
+        <h3 style="color:var(--danger)">Clientes Vencidos</h3>
         <div id="lista-vencidos"></div>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
@@ -110,25 +120,21 @@
     <div id="view-pix" class="card hidden">
         <h3>Configurar PIX</h3>
         <input type="text" id="chave-pix" placeholder="Sua Chave PIX">
-        <button class="btn-save" onclick="salvarPix()">SALVAR</button>
+        <button class="btn-save" onclick="salvarPix()">SALVAR PIX</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 
     <!-- XML -->
     <div id="view-xml" class="card hidden">
-        <h3>Backup XML</h3>
-        <button class="btn-main" onclick="exportarXML()">EXPORTAR XML</button>
-        <div style="margin-top:20px; border-top:1px solid #ddd; padding-top:20px;">
-            <input type="file" id="file-xml" accept=".xml">
-            <button class="btn-save" style="margin-top:10px" onclick="importarXML()">IMPORTAR XML</button>
-        </div>
+        <h3>Exportar XML</h3>
+        <button class="btn-main" onclick="exportarXML()">BAIXAR XML</button>
         <button class="btn-sec" onclick="abrir('view-panel')">VOLTAR</button>
     </div>
 </div>
 
 <div class="footer-banner">
     <div class="banner-scroll">
-        🚀 KONECT GESTÃO CLOUD: DADOS SEGUROS NO SUPABASE — 🔄 SINCRONIZAÇÃO EM TEMPO REAL — 📱 VERSÃO 2.7
+        🚀 KONECT GESTÃO CLOUD: DADOS SEGUROS NO SUPABASE — SINCRONIZADO EM BAURU/SP — VERSÃO 2.8
     </div>
 </div>
 
@@ -148,14 +154,7 @@
         const e = document.getElementById('email').value;
         const p = document.getElementById('pass').value;
         const { data, error } = await sb.auth.signInWithPassword({ email: e, password: p });
-        if(error) alert("Erro: " + error.message); else { user = data.user; carregarDados(); }
-    }
-
-    async function acaoCriar() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
-        const { error } = await sb.auth.signUp({ email: e, password: p });
-        if(error) alert(error.message); else alert("Verifique seu e-mail!");
+        if(error) alert(error.message); else { user = data.user; carregarDados(); }
     }
 
     async function carregarDados() {
@@ -163,24 +162,33 @@
         dadosClientes = data || [];
         const pix = localStorage.getItem('pix_' + user.id);
         if(pix) document.getElementById('chave-pix').value = pix;
+        
+        atualizarTop5();
         abrir('view-panel');
     }
 
+    function atualizarTop5() {
+        const list = document.getElementById('top-5-list');
+        const top5 = [...dadosClientes].sort((a,b) => a.nome.localeCompare(b.nome)).slice(0, 5);
+        if(top5.length === 0) { list.innerHTML = "Nenhum cliente cadastrado."; return; }
+        
+        list.innerHTML = top5.map(c => `
+            <div class="top-item">
+                <span>${c.nome}</span>
+                <span style="color:var(--primary)">${c.vencimento.split('-').reverse().join('/')}</span>
+            </div>
+        `).join('');
+    }
+
     function aplicarFiltros() {
-        const nome = document.getElementById('filtro-nome').value.toLowerCase();
-        const dataVenc = document.getElementById('filtro-data').value;
+        const nome = document.getElementById('busca-nome').value.toLowerCase();
+        const dataV = document.getElementById('busca-data').value;
         
         let filtrados = dadosClientes;
         if(nome) filtrados = filtrados.filter(c => c.nome.toLowerCase().includes(nome));
-        if(dataVenc) filtrados = filtrados.filter(c => c.vencimento === dataVenc);
+        if(dataV) filtrados = filtrados.filter(c => c.vencimento === dataV);
         
         renderBase('lista-geral', filtrados);
-    }
-
-    function limparFiltros() {
-        document.getElementById('filtro-nome').value = "";
-        document.getElementById('filtro-data').value = "";
-        renderBase('lista-geral', dadosClientes);
     }
 
     async function salvarCliente() {
@@ -190,10 +198,8 @@
             telefone: document.getElementById('tel').value,
             vencimento: document.getElementById('venc').value,
             valor: document.getElementById('valor').value,
-            acessos: document.getElementById('acessos').value,
             pacote: document.getElementById('pacote').value,
             app: document.getElementById('app').value,
-            servidor: document.getElementById('servidor').value,
             user_id: user.id
         };
         if(id) await sb.from('clientes').update(info).eq('id', id);
@@ -202,15 +208,14 @@
     }
 
     function renderBase(targetId, lista) {
-        const div = document.getElementById(targetId);
-        div.innerHTML = "";
+        const div = document.getElementById(targetId); div.innerHTML = "";
         lista.forEach(c => {
             const item = document.createElement('div');
             item.className = 'client-card';
             item.innerHTML = `
                 <div><b>${c.nome}</b><br><small>Venc: ${c.vencimento.split('-').reverse().join('/')}</small></div>
                 <div style="display:flex; gap:5px">
-                    <button class="btn-save" style="width:40px; padding:8px" onclick="enviarCobranca('${c.telefone}','${c.nome}','${c.vencimento}','${c.valor}')"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn-save" style="width:40px; padding:8px" onclick="enviarCobranca('${c.telefone}','${c.nome}','${c.vencimento}','${c.valor}')" title="Enviar Cobrança"><i class="fab fa-whatsapp"></i></button>
                     <button class="btn-edit" onclick="prepararEdicao(${c.id})"><i class="fas fa-edit"></i></button>
                     <button class="btn-del" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button>
                 </div>
@@ -219,41 +224,22 @@
         });
     }
 
-    function renderLista(targetId) {
-        const hoje = new Date(); hoje.setHours(0,0,0,0);
-        let lista = dadosClientes;
-        
-        if(targetId === 'lista-vencidos') {
-            lista = dadosClientes.filter(c => new Date(c.vencimento + "T00:00:00") < hoje);
-        } else if(targetId === 'lista-vencendo') {
-            const limite = new Date(); limite.setDate(hoje.getDate() + 3);
-            lista = dadosClientes.filter(c => {
-                const dv = new Date(c.vencimento + "T00:00:00");
-                return dv >= hoje && dv <= limite;
-            });
-        }
-        renderBase(targetId, lista);
-    }
-
     function enviarCobranca(tel, nome, venc, valor) {
         const pix = document.getElementById('chave-pix').value || "Chave não cadastrada.";
         const dataF = venc.split('-').reverse().join('/');
-        const texto = `Olá *${nome}*!\nLembramos que sua assinatura vence em *${dataF}*.\n\n💰 Valor: R$ ${valor}\n🔑 PIX: ${pix}`;
-        window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(texto)}`);
+        const msg = `Olá *${nome}*!\nLembramos que sua assinatura vence dia *${dataF}*.\n\n💰 Valor: R$ ${valor}\n🔑 PIX: ${pix}`;
+        window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`);
     }
 
     function prepararEdicao(id) {
         const c = dadosClientes.find(cli => cli.id == id);
-        if(!c) return;
         document.getElementById('edit-id').value = c.id;
-        document.getElementById('nome').value = c.nome || "";
-        document.getElementById('tel').value = c.telefone || "";
-        document.getElementById('venc').value = c.vencimento || "";
-        document.getElementById('valor').value = c.valor || "";
-        document.getElementById('acessos').value = c.acessos || "";
-        document.getElementById('pacote').value = c.pacote || "";
-        document.getElementById('app').value = c.app || "";
-        document.getElementById('servidor').value = c.servidor || "";
+        document.getElementById('nome').value = c.nome;
+        document.getElementById('tel').value = c.telefone;
+        document.getElementById('venc').value = c.vencimento;
+        document.getElementById('valor').value = c.valor;
+        document.getElementById('pacote').value = c.pacote;
+        document.getElementById('app').value = c.app;
         document.getElementById('form-title').innerText = "Editando Cliente";
         abrir('view-add');
     }
@@ -262,64 +248,36 @@
         document.querySelectorAll('.card, #view-panel').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         if(id === 'view-list') aplicarFiltros();
-        if(id === 'view-expired') renderLista('lista-vencidos');
-        if(id === 'view-vencendo') renderLista('lista-vencendo');
+        if(id === 'view-vencendo' || id === 'view-expired') {
+            const hoje = new Date(); hoje.setHours(0,0,0,0);
+            let lista = (id === 'view-expired') ? 
+                dadosClientes.filter(c => new Date(c.vencimento + "T00:00:00") < hoje) :
+                dadosClientes.filter(c => {
+                    const dv = new Date(c.vencimento + "T00:00:00");
+                    const lim = new Date(); lim.setDate(hoje.getDate() + 3);
+                    return dv >= hoje && dv <= lim;
+                });
+            renderBase(id === 'view-expired' ? 'lista-vencidos' : 'lista-vencendo', lista);
+        }
     }
 
     function limparCampos() {
         document.getElementById('edit-id').value = '';
-        document.querySelectorAll('#view-add input, #view-add select').forEach(i => i.value = '');
+        document.querySelectorAll('#view-add input').forEach(i => i.value = '');
     }
 
-    async function excluirCliente(id) {
-        if(confirm("Excluir permanentemente?")) {
-            await sb.from('clientes').delete().eq('id', id); carregarDados();
-        }
-    }
-
-    function salvarPix() { 
-        localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); 
-        alert("PIX Salvo!"); abrir('view-panel'); 
-    }
-
-    async function verificarSessao() { 
-        const { data } = await sb.auth.getSession(); 
-        if(data.session) { user = data.session.user; carregarDados(); } 
-    }
-
+    async function excluirCliente(id) { if(confirm("Excluir?")) { await sb.from('clientes').delete().eq('id', id); carregarDados(); } }
+    function salvarPix() { localStorage.setItem('pix_'+user.id, document.getElementById('chave-pix').value); alert("PIX Salvo!"); abrir('view-panel'); }
+    async function verificarSessao() { const { data } = await sb.auth.getSession(); if(data.session) { user = data.session.user; carregarDados(); } }
     async function logout() { await sb.auth.signOut(); location.reload(); }
-
+    
     function exportarXML() {
         let xml = '<?xml version="1.0" encoding="UTF-8"?><clientes>';
-        dadosClientes.forEach(c => {
-            xml += `<cliente><nome>${c.nome}</nome><tel>${c.telefone}</tel><venc>${c.vencimento}</venc><valor>${c.valor}</valor><pacote>${c.pacote}</pacote></cliente>`;
-        });
+        dadosClientes.forEach(c => xml += `<cliente><nome>${c.nome}</nome><venc>${c.vencimento}</venc><valor>${c.valor}</valor></cliente>`);
         xml += '</clientes>';
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([xml], {type:'text/xml'}));
-        link.download = `konect_backup.xml`; link.click();
-    }
-
-    function importarXML() {
-        const file = document.getElementById('file-xml').files[0];
-        if(!file) return alert("Selecione o arquivo!");
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
-            const clis = xmlDoc.getElementsByTagName("cliente");
-            for(let c of clis) {
-                await sb.from('clientes').insert([{
-                    nome: c.getElementsByTagName("nome")[0].textContent,
-                    telefone: c.getElementsByTagName("tel")[0].textContent,
-                    vencimento: c.getElementsByTagName("venc")[0].textContent,
-                    valor: c.getElementsByTagName("valor")[0].textContent,
-                    user_id: user.id
-                }]);
-            }
-            alert("Importado!"); carregarDados();
-        };
-        reader.readAsText(file);
+        link.download = `konect_data.xml`; link.click();
     }
 </script>
 </body>
